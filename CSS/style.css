@@ -1,0 +1,111 @@
+#test{
+    color: red;
+}
+
+.testClass{
+    color: blue;
+}
+
+
+#background{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    /* background: blue; */
+
+
+}
+
+table{
+    border-collapse: collapse;
+}
+
+.gameboardBox{
+    width: 100px;
+    height: 100px;
+
+    border:2px solid black
+}
+
+
+.row{
+    position: sticky;
+    height: 15px;
+    background: black;
+    margin-left: 10%;
+
+    width: 80%;
+    z-index: 1;
+}
+
+.column{
+    position: absolute;
+    height: 80%;
+    background: black;
+    width: 15px;
+    top: 10%;
+    z-index: 1;
+}
+
+#gameboard2{
+    top: 66vh;
+
+}
+
+#gameboard1{
+    top: 33vh;
+}
+
+#gameboard3{
+
+    left: 33vw;
+}
+
+#gameboard4{
+    left: 66vw;
+
+}
+
+.PositionOne{
+    position: absolute;
+
+}
+
+.circle{
+    width: 20%;
+    height: 20%;
+    font-size: calc(10vw + 10vh);
+}
+
+
+.cross{
+    width: 20%;
+    height: 20%;
+    font-size: inherit;
+}
+
+.empty{
+    display: none;
+
+
+}
+
+#piece1{
+    position: absolute;
+
+    left: 11vw;
+    top: 11vh;
+    text-align: center;
+
+}
+
+
+/* .circle{
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: red;
+    border-width: thick; 
+} */
