@@ -1,17 +1,18 @@
 #test{
-    color: red;
+    color: white;
 }
 
 .testClass{
-    color: blue;
+    color: black;
 }
-
 
 #background{
     position: absolute;
     height: 100%;
     width: 100%;
-    margin: auto;
+    display: none;
+
+
     /* background: blue; */
 
 
@@ -49,21 +50,21 @@ table{
 }
 
 #gameboard2{
-    top: 66vh;
+    top: 66%;
 
 }
 
 #gameboard1{
-    top: 33vh;
+    top: 33%;
 }
 
 #gameboard3{
 
-    left: 33vw;
+    left: 35%;
 }
 
 #gameboard4{
-    left: 66vw;
+    left: 64%;
 
 }
 
@@ -72,40 +73,331 @@ table{
 
 }
 
+.winnerColor{
+    color: #faf605;
+}
+
+.playerOneColor{
+    color: #d84949;
+}
+
+.playerTwoColor{
+    color: #3b53cc;
+}
+
 .circle{
-    width: 20%;
-    height: 20%;
-    font-size: calc(10vw + 10vh);
+    transform: scaleX(1.1);
+    width: 22%;
+    height: 10%;
+    font-size: calc(11vw + 11vh);
+    font-family: cursive;
+    line-height: 10%;
+    z-index: 2;
+
 }
 
 
 .cross{
-    width: 20%;
-    height: 20%;
-    font-size: inherit;
+    transform: scaleX(1.1);
+    width: 22%;
+    height: 10%;
+    font-size: calc(11vw + 11vh);
+    font-family: cursive;
+    line-height: 10%;
+    z-index: 2;
+
 }
 
 .empty{
     display: none;
-
+    z-index: 2;
 
 }
 
 #piece1{
     position: absolute;
 
-    left: 11vw;
-    top: 11vh;
+    left: 11%;
+    top: 17%;
     text-align: center;
+}
+#piece2{
+    position: absolute;
+
+    left: 39.5%;
+    top: 17%;
+    text-align: center;
+}
+#piece3{
+    position: absolute;
+
+    vertical-align: middle;
+    left: 67.5%;
+    top: 17%;
+    text-align: center;
+
+
+}
+#piece4{
+    position: absolute;
+
+    /* position: relative; */
+    left: 11%;
+    top: 45%;
+    text-align: center;
+
+
+}
+#piece5{
+    position: absolute;
+
+    left: 39.5%;
+    top: 45%;
+    text-align: center;
+
+
+}
+#piece6{
+
+    position: absolute;
+
+    left: 67.5%;
+    top: 45%;
+    text-align: center;
+
+
+
 
 }
 
 
-/* .circle{
+#piece7{
+
+    position: absolute;
+
+    left: 11%;
+    top: 74%;
+    text-align: center;
+
+
+
+
+}
+
+
+#piece8{
+
+    position: absolute;
+
+    left: 39.5%;
+    top: 74%;
+    text-align: center;
+
+
+
+
+}
+
+
+#piece9{
+
+    position: absolute;
+
+    left: 67.5%;
+    top: 74%;
+    text-align: center;
+
+
+
+
+}
+
+.button{
+
+    z-index: 3;
+    
+}
+
+
+
+ /* .circle{
     height: 100px;
     width: 100px;
     border-radius: 50%;
     border-style: solid;
     border-color: red;
     border-width: thick; 
-} */
+}  */
+
+
+#place1{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 10%;
+    top: 10%;
+}
+
+#place2{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 37.5%;
+    top: 10%;
+
+
+}
+
+#place3{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 65.3%;
+    top: 10%;
+
+
+}
+
+#place4{
+    position: absolute;
+   
+    width: 25%;
+    height: 30%;
+    left: 10%;
+    top: 34.5%;
+}
+
+#place5{
+    position: absolute;
+   
+    width: 25%;
+    height: 30%;
+    left: 37.5%;
+    top: 34.5%;
+
+
+}
+
+#place6{
+    position: absolute;
+   
+    width: 25%;
+    height: 30%;
+    left: 65.3%;
+    top: 34.5%;
+
+
+}
+
+
+
+#place7{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 10%;
+    top: 67%;
+}
+
+#place8{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 37.5%;
+    top: 67%;
+
+
+}
+
+#place9{
+    position: absolute;
+   
+    width: 25%;
+    height: 22%;
+    left: 65.3%;
+    top: 67%;
+
+
+}
+
+.cover{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /* font-size: calc(11vw + 11vh); */
+    font-family: cursive;
+    height: 100vh;
+}
+
+#endScene{
+    z-index: 3;
+}
+
+#startScene{
+    z-index: 4;
+    justify-content: space-evenly;
+}
+
+
+#winnertext{
+    font-size: calc(11vw + 11vh);
+    text-align: center;
+}
+
+#endbuttun{
+    font-size: calc(1vw + 1vh);
+}
+
+#endScenePlanTwo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    position: absolute;
+    font-size: calc(11vw + 11vh);
+    font-family: cursive;
+    margin-left: 11vw;
+    text-align: center;
+}
+
+#blocker{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index:5;
+    display: none;
+}
+
+#whosTurn{
+    display: block;
+    position: absolute;
+    font-family: cursive;
+    font-size: calc(1vw + 1vh);
+}
+
+
+#welcomeScene{
+    font-size: calc(11vw + 11vh);
+    text-align: center;
+}
+
+#startbuttun{
+    font-size: calc(1vw + 1vh);
+
+}
+
+.nameSet{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    /* font-size: calc(11vw + 11vh); */
+    font-family: cursive;
+    width: 100%;
+
+}

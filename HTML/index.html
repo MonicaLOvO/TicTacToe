@@ -9,9 +9,11 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../CSS/style.css'>
     <script src='../JavaScript/logic.js'></script>
 </head>
-<body>
+<body class="backColor">
     
     <div id="background">
+        <div id="whosTurn"></div>
+
         <div class="row" id="gameboard1"></div>
         <div class="row" id="gameboard2"></div>
         <div class="column" id="gameboard3"></div>
@@ -19,49 +21,64 @@
 
 
         <div class= "empty" id="piece1"></div>
-        <!-- <div class= "circle" id="piece2"></div>
-        <div class= "circle" id="piece3"></div>
-        <div class= "circle" id="piece4"></div>
-        <div class= "circle" id="piece5"></div>
-        <div class= "circle" id="piece6"></div>
-        <div class= "circle" id="piece7"></div>
-        <div class= "circle" id="piece8"></div>
-        <div class= "circle" id="piece9"></div> -->
+        <div class= "empty" id="piece2"></div>
+        <div class= "empty" id="piece3"></div>
+        <div class= "empty" id="piece4"></div>
+        <div class= "empty" id="piece5"></div>
+        <div class= "empty" id="piece6"></div>
+        <div class= "empty" id="piece7"></div>
+        <div class= "empty" id="piece8"></div>
+        <div class= "empty" id="piece9"></div>
+
+
+        <div class = "button" id = place1 onclick="buttonClick('piece1')"></div>
+        <div class = "button" id = place2 onclick="buttonClick('piece2')"></div>
+        <div class = "button" id = place3 onclick="buttonClick('piece3')"></div>
+        <div class = "button" id = place4 onclick="buttonClick('piece4')"></div>
+        <div class = "button" id = place5 onclick="buttonClick('piece5')"></div>
+        <div class = "button" id = place6 onclick="buttonClick('piece6')"></div>
+        <div class = "button" id = place7 onclick="buttonClick('piece7')"></div>
+        <div class = "button" id = place8 onclick="buttonClick('piece8')"></div>
+        <div class = "button" id = place9 onclick="buttonClick('piece9')"></div>    
+        
+
     </div>
 
-    <!-- <div id="piece1" class="circle">
-        <div></div>
-        <div></div>
-    </div> -->
+    <div id="blocker"></div>
 
-    
-    
+    <div id="startScene" class="cover">
+        <div id="welcomeScene">
+            TicTacToe!
+        </div>
+        
+        <div class="nameSet" >
+            <div id="player N1" >
+                player1 name: 
+                <input id="playerOne" type="text" placeholder="player 1">
+            </div>
+            <div id="player N2" >
+                player2 name:
+                <input id="playerTwo" type="text" placeholder="player 2"> 
+            </div>
+        </div>
 
-  
+        <button id="startbuttun" onclick ="startGame()">
+            Start Game
+        </button>
 
-    
-    <!-- <table>
-        <thead></thead>
-        <tbody>
-            <tr>
-                <td class="gameboardBox">10</td>
-                <td class="gameboardBox">20</td>
-                <td class="gameboardBox">30</td>
-            </tr>
-            <tr>
-                <td class="gameboardBox">40</td>
-                <td class="gameboardBox">50</td>
-                <td class="gameboardBox">60</td>
-            </tr>
-            <tr>
-                <td class="gameboardBox">70</td>
-                <td class="gameboardBox">80</td>
-                <td class="gameboardBox">90</td>
-            </tr>
-        </tbody>
-    </table> -->
-    
-    <!-- <span></span> -->
-    <!-- <div class="testClass"></div> -->
+        
+    </div>
+
+
+    <div id="endScene" class="cover">
+        <div id="winnertext">
+            Circle Win!
+        </div>
+
+        <button id="endbuttun" onclick ="restartGame()">
+            Restart Game
+        </button>
+
+    </div>
 </body>
 </html>
