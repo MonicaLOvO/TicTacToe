@@ -12,7 +12,9 @@
 <body class="backColor">
     
     <div id="background">
-        <div id="whosTurn"></div>
+        <div class="tip" id="printRoom"></div>
+        <div class="tip" id="whosTurn"></div>
+
 
         <div class="row" id="gameboard1"></div>
         <div class="row" id="gameboard2"></div>
@@ -46,25 +48,42 @@
 
     <div id="blocker"></div>
 
+    <div id="joinRoom">
+        <input id="enterRoomID" type="text" placeholder="pleace enter Room ID">
+        <button class="startbuttun" onclick ="findGame()">
+            Join Game
+        </button>
+    </div>
+
     <div id="startScene" class="cover">
         <div id="welcomeScene">
             TicTacToe!
         </div>
         
+        
         <div class="nameSet" >
             <div id="player N1" >
-                player1 name: 
-                <input id="playerOne" type="text" placeholder="player 1">
+                <!-- player name:  -->
+                <input id="playerOne" type="text" placeholder="player name">
             </div>
-            <div id="player N2" >
-                player2 name:
-                <input id="playerTwo" type="text" placeholder="player 2"> 
-            </div>
+
         </div>
 
-        <button id="startbuttun" onclick ="startGame()">
+        <button class="startbuttun" onclick ="Host()">
             Start Game
         </button>
+
+        <button class="startbuttun" onclick ="joinGame()">
+            Join Others Game
+        </button>
+
+
+        <!-- <button onclick ="getGameBoard()">
+            Get
+        </button>
+        <button onclick ="saveGameBoardToServer()">
+            Save
+        </button> -->
 
         
     </div>
@@ -80,5 +99,7 @@
         </button>
 
     </div>
+
+
 </body>
 </html>

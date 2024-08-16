@@ -1,15 +1,40 @@
 window.onload = start;
 let iscircle = true;
 let blocker;
-let pieceList = ["piece1", "piece2", "piece3", "piece4", "piece5", "piece6", "piece7", "piece8", "piece9", ];   
-let gameboardlist=[
-  [null,null,null],
-  [null,null,null],
-  [null,null,null]];
-let playerOneName;
-let playerTwoName;
+let pieceList = [
+  "piece1",
+  "piece2",
+  "piece3",
+  "piece4",
+  "piece5",
+  "piece6",
+  "piece7",
+  "piece8",
+  "piece9",
+];
+let gameboardlist = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
+
+const intervalSec = 2 * 1000;
+
+
+let roomNum;
+let doublePlayerInterval;
+let playerName;
+
+let checkfristplayer=0;
+let side;
+let playerTwoID = null;
+let playerOneID = null;
+let intervalId;
+
+let playerTwoInterval;
 
 function start() {
+  // alert("started");
   const startScene = document.getElementById("startScene");
   startScene.style.display = "flex";
 
@@ -36,52 +61,107 @@ function start() {
 }
 
 
+
+function joinGame(){
+  const room = document.getElementById("joinRoom");
+  const startScene = document.getElementById("startScene");
+  startScene.style.display = "none";
+  room.style.display = "flex";
+  let inputBoxPlayerOne = document.getElementById("playerOne");
+  playerName =
+    inputBoxPlayerOne.value == ""
+      ? "Player2"
+      : inputBoxPlayerOne.value;
+
+  playerTwoID = Math.floor(10000000+Math.random() * 90000000);
+
+
+}
+
+
+function findGame(){
+  side = "cross";
+  let inputBoxRoom = document.getElementById("enterRoomID");
+  let temp = inputBoxRoom.value;
+  blocker.style.display = "block";
+  let check = findRoom(temp);
+
+  playerTwoInterval = setInterval(() => {getGameBoard();}, intervalSec);
+
+}
+
+
+function Host(){
+  side = "circle";
+  roomNum = Math.floor(10000+Math.random() * 90000).toString();
+  let inputBoxPlayerOne = document.getElementById("playerOne");
+  playerName =
+    inputBoxPlayerOne.value == ""
+      ? "Player1"
+      : inputBoxPlayerOne.value;
+  playerOneID = Math.floor(10000000+Math.random() * 90000000);
+  startGame();
+
+  
+}
+
 function startGame() {
+  blocker.style.display = "block";
+  saveGameBoard();
   const startScene = document.getElementById("startScene");
   const target = document.getElementById("background");
+  const roomSet = document.getElementById("joinRoom");
   target.style.display = "block";
   startScene.style.display = "none";
-  
-  let inputBoxPlayerOne = document.getElementById("playerOne");
-  let inputBoxPlayerTwo  = document.getElementById("playerTwo");
-  
-  playerOneName = inputBoxPlayerOne.value == "" ? inputBoxPlayerOne.placeholder : inputBoxPlayerOne.value;
-  playerTwoName = inputBoxPlayerTwo.value == "" ? inputBoxPlayerTwo.placeholder : inputBoxPlayerTwo.value;
+  roomSet.style.display = "none";
+
+  const printRoom = document.getElementById("printRoom");
+  printRoom.innerHTML = "Room number: "+roomNum+"<br/>Waiting For Another Player...";
 }
 
 function buttonClick(targetId) {
-  console.log(targetId);
+
   const target = document.getElementById(targetId);
   const whosTurn = document.getElementById("whosTurn");
 
-  if (iscircle == true) {
-    whosTurn.innerHTML = playerTwoName + "'s turn";
+  blocker.style.display = "block";
+  if (iscircle == true && side=="circle") {
+    whosTurn.innerHTML = "cross" + "'s turn";
     whosTurn.className = "playerTwoColor";
     if (target.className == "circle") {
-      target.className = "empty";
-      iscircle = false;
+      console.log("there is not empty box")
+      iscircle = true;
     } else if (target.className == "empty") {
       target.className = "circle";
       target.innerHTML = "o";
       target.classList.add("playerOneColor");
       iscircle = false;
+    }else{
+      console.log("there is not empty box")
+      iscircle = true;
     }
-  } else {
-    whosTurn.innerHTML = playerOneName + "'s turn";
+  } else if(iscircle == false && side=="cross"){
+    whosTurn.innerHTML = "circle" + "'s turn";
     whosTurn.className = "playerOneColor";
     if (target.className == "cross") {
-      target.className = "empty";
-      iscircle = true;
+      console.log("there is not empty box")
+      iscircle = false;
     } else if (target.className == "empty") {
       target.className = "cross";
       target.innerHTML = "x";
       target.classList.add("playerTwoColor");
       iscircle = true;
+    }else{
+      console.log("there is not empty box")
+      iscircle = false;
     }
   }
-
+ 
   winningcheck();
+  saveGameBoard();
+  // send to server
 }
+
 
 function winningcheck() {
   let winner = "";
@@ -106,7 +186,7 @@ function winningcheck() {
     circleCount = 0;
     for (let i = 0; i < list.length; i++) {
       const target = document.getElementById(list[i]);
-      
+
       if (target.classList.contains("circle")) {
         circleCount += 1;
       } else if (target.classList.contains("cross")) {
@@ -114,17 +194,15 @@ function winningcheck() {
       }
     }
 
-    let winingcase=list;
+    let winingcase = list;
 
     if (crossCount == 3) {
       for (let item of winingcase) {
         let temp = document.getElementById(item);
 
-        if(temp.classList.contains("playerOneColor"))
-        {
+        if (temp.classList.contains("playerOneColor")) {
           temp.classList.remove("playerOneColor");
-        }
-        else{
+        } else {
           temp.classList.remove("playerTwoColor");
         }
         temp.classList.add("winnerColor");
@@ -134,16 +212,14 @@ function winningcheck() {
     } else if (circleCount == 3) {
       for (let item of winingcase) {
         let temp = document.getElementById(item);
-        if(temp.classList.contains("playerOneColor"))
-          {
-            temp.classList.remove("playerOneColor");
-          }
-          else{
-            temp.classList.remove("playerTwoColor");
-          }
-          temp.classList.add("winnerColor");
+        if (temp.classList.contains("playerOneColor")) {
+          temp.classList.remove("playerOneColor");
+        } else {
+          temp.classList.remove("playerTwoColor");
+        }
+        temp.classList.add("winnerColor");
       }
-  
+
       winner = "circle";
       break;
     }
@@ -151,97 +227,282 @@ function winningcheck() {
 
   if (winner == "cross") {
     blocker.style.display = "block";
-    setTimeout(() => {endScene(2);}, 1000);
+    setTimeout(() => {
+      endScene(2);
+    }, 1000);
   } else if (winner == "circle") {
     blocker.style.display = "block";
-    setTimeout(() => {endScene(1);}, 1000);
-  }else{
+    setTimeout(() => {
+      endScene(1);
+    }, 1000);
+  } else {
     let full = true;
-    for(let i =0; i<pieceList.length; i++){
+    for (let i = 0; i < pieceList.length; i++) {
       let target = document.getElementById(pieceList[i]);
-      console.log(target.className);
-      if(target.className == "empty"){
-        full=false;
+      if (target.className == "empty") {
+        full = false;
         break;
       }
-
     }
-    if(full==true){
+    if (full == true) {
       blocker.style.display = "block";
-      setTimeout(() => {endScene(0);}, 1000);
+      setTimeout(() => {
+        endScene(0);
+      }, 1000);
     }
   }
-  saveGameBoard();
+
+  
+  // saveGameBoard();
 }
 
-function endScene(iscircle){
+function endScene(iscircle) {
   blocker.style.display = "none";
   const background = document.getElementById("background");
   const endScene = document.getElementById("endScene");
   const wintext = document.getElementById("winnertext");
   background.style.display = "none";
 
-  if(iscircle==1){
-    console.log("circle win!");
-    wintext.innerHTML = playerOneName + " Win!";
+  if (iscircle == 1) {
+    wintext.innerHTML = playerName + " Win!";
     wintext.classList.add("playerOneColor");
-
-  }
-  else if (iscircle==2){
-    console.log("cross win!");
+  } else if (iscircle == 2) {
     wintext.innerHTML = playerTwoName + " Win!";
     wintext.classList.add("playerTwoColor");
-
-  }else if (iscircle==0){
-    console.log("It's A Tie!");
+  } else if (iscircle == 0) {
     wintext.innerHTML = "It's A Tie!";
     wintext.className = "";
-    
   }
 
   endScene.style.display = "flex";
 }
 
-function restartGame(){
+function restartGame() {
   const background = document.getElementById("background");
   const endScene = document.getElementById("endScene");
   background.style.display = "block";
   endScene.style.display = "none";
 
-
   const whosTurn = document.getElementById("whosTurn");
   whosTurn.className = "";
   whosTurn.style.display = "none";
 
-
-  for(let i =0; i<pieceList.length; i++){
+  for (let i = 0; i < pieceList.length; i++) {
     let target = document.getElementById(pieceList[i]);
     target.className = "empty";
   }
 }
 
-function saveGameBoard(){
-  for(let i =0; i<gameboardlist.length; i++){
-    for(let index =0; index<gameboardlist[i].length; index++){
-      let num = 3*i;
+function saveGameBoard() {
+  for (let i = 0; i < gameboardlist.length; i++) {
+    for (let index = 0; index < gameboardlist[i].length; index++) {
+      let num = 3 * i;
 
-      let target = document.getElementById(pieceList[num+index]);
-      
-      if(target.classList.contains("circle")){
+      let target = document.getElementById(pieceList[num + index]);
+
+      if (target.classList.contains("circle")) {
         gameboardlist[i][index] = 0;
-
-      }else if(target.classList.contains("cross")){
+      } else if (target.classList.contains("cross")) {
         gameboardlist[i][index] = 1;
-
-      }else{
+      } else {
         gameboardlist[i][index] = null;
-
       }
     }
   }
-  console.log(gameboardlist);
-  console.log("\n");
+  saveGameBoardToServer();
+}
+async function saveGameBoardToServer() {
+  await fetch("https://localhost:7111/api/TicTacToe/saveGameBoard", {
+    method: "Put",
+    body: JSON.stringify({
+      data: gameboardlist,
+      playerOne: playerOneID,
+      playerTwo: playerTwoID,
+      turn: iscircle,
+      roomID: roomNum,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+
+  if(side == "circle" && playerTwoID==null ){
+    doublePlayerInterval = setInterval(() => {getGameBoard();}, intervalSec);
+  }else{
+    intervalId = setInterval(() => {getGameBoard();}, intervalSec);
+  }
+}
+
+async function getGameBoard() {
+  const response = await fetch(
+    "https://localhost:7111/api/TicTacToe/getGameBoard/"+ roomNum
+  );
+  const data = await response.json();
+
+  checkWhosTurn(data);
+  // host wait for second player
+  checkSecoundplayer(data);
+ 
+  // Check if other player make a move
+  checkNewGameBoard(data);
+
+  playerTwoSpecial(data);
+
+  //check if win
+  winningcheck();
+}
+function checkSecoundplayer(data){
+  if(data["playerTwo"]!=null){
+    clearInterval(doublePlayerInterval);
+    blocker.style.display = "none";
+    const printRoom = document.getElementById("printRoom");
+    printRoom.style.display = "none";
+  }
+
+
+
+}
+function checkNewGameBoard(data){
+  if(JSON.stringify(data["data"]) != JSON.stringify(gameboardlist))
+  {
+    gameboardlist = data["data"];
+    clearInterval(intervalId);
+    refreshGameBoard();
+    blocker.style.display = "none";
+  }
+
+}
+function checkWhosTurn(data){
+  if(data["turn"]!= iscircle){
+    iscircle = data["turn"];
+    if(iscircle==true){
+      whosTurn.innerHTML = "circle" + "'s turn";
+      whosTurn.className = "playerOneColor";
+
+    }else{
+      whosTurn.innerHTML = "cross" + "'s turn";
+      whosTurn.className = "playerTwoColor";
+    }
+    
+  }
+  
+
+}
+function playerTwoSpecial(data){
+  if(playerOneID==null)
+  {
+    playerOneID = data["playerOne"];
+    clearInterval(playerTwoInterval);
+    saveGameBoard();
+  }
+  clearInterval(playerTwoInterval);
 
 }
 
-function 
+
+async function getEvent() {
+  const response = await fetch(
+    "https://localhost:7111/api/CEOSim/Item/readFile"
+  );
+  const data = await response.json();
+}
+
+// async function saveGameBoard(){
+//   // let str = "";
+//   //gameboardlist.forEach(function(el) {str += el[0] + ', ' + el[1] + ', [' + el[2] + '] '});
+
+//   // const temp = gameboardlist.toString();
+//  // let JsonArray = JSON.parse(Arrays.deepToString(gameboardlist));
+
+//   // console.log("\n");
+
+// let keys = gameboardlist.shift();
+// // create JSON objects from the remaining data
+// let json = gameboardlist.map(row => {
+//     let obj = {};
+//     // add each element of the row to the object with the corresponding key
+//     row.forEach((value, index) => {
+//         obj[keys[index]] = value;
+//     });
+//     return obj;
+// });
+// //console.log(json);
+// console.log(gameboardlist);
+// return json;
+
+// let keys = gameboardlist.shift();
+// let json = gameboardlist.map(row => Object.assign({}, ...row.map((v, i) => ({ [keys[i]]: v }))));
+
+//let json  = gameboardlist.assign();
+//   console.log(json);
+// }
+
+// async function saveGameBoard(){
+//   let JsonArray = new JSONArray();
+//   for(let j = 0;j<gameboardlist.length; j++){
+//     let tempArray = new JSONArray();
+
+//     for(let i =0; i<gameboardlist[j].length; i++){
+//       tempArray.put(gameboardlist[j][i]);
+
+//     }
+//     JsonArray.put(tempArray);
+//   }
+//   // console.log(JsonArray);
+//   // console.log("\n");
+
+// }
+
+
+
+
+
+async function findRoom(id) {
+  const response = await fetch("https://localhost:7111/api/TicTacToe/findRoom", {
+    method: "Put",
+    body: JSON.stringify({
+      RoomID: id,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+
+  const data = await response.json();
+
+  if(data==true||data=="true" ){
+    roomNum = id;
+    startGame();
+  }else{
+    inputBoxRoom.value = null;
+    inputBoxRoom.placeholder = "Room not exist";
+  }
+  blocker.style.display = "none";
+}
+
+
+function refreshGameBoard() {
+  for (let i = 0; i < gameboardlist.length; i++) {
+    for (let index = 0; index < gameboardlist[i].length; index++) {
+      let num = 3 * i;
+
+      let target = document.getElementById(pieceList[num + index]);
+
+      if (gameboardlist[i][index] == 0) {
+        target.className = "circle";
+        target.innerHTML = "o";
+        target.classList.add("playerOneColor");
+      } else if (gameboardlist[i][index] == 1) {
+        target.className = "cross";
+        target.innerHTML = "x";
+        target.classList.add("playerTwoColor");
+      } else {
+        target.className = "empty";
+      }
+    }
+  }
+
+  
+}
+
+
