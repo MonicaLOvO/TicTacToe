@@ -20,6 +20,14 @@ let gameboardlist = [
 
 const intervalSec = 2 * 1000;
 
+/**
+ * 
+ * Hello 啊~ 明天的我~
+ * 接下来要检查的部分是
+ * 把player的ID换成名字这样就可以显示赢家(正确显示赢家)
+ * 检查为什么Player2 下完了一步以后还能上传gamboard
+ * 
+ */
 
 let roomNum;
 let doublePlayerInterval;
@@ -86,7 +94,7 @@ function findGame(){
   blocker.style.display = "block";
   let check = findRoom(temp);
 
-  playerTwoInterval = setInterval(() => {getGameBoard();}, intervalSec);
+  // playerTwoInterval = setInterval(() => {getGameBoard();}, intervalSec);
 
 }
 
@@ -293,7 +301,7 @@ function restartGame() {
   }
 }
 
-function saveGameBoard() {
+function saveGameBoard(doNotStartGet = false) {
   for (let i = 0; i < gameboardlist.length; i++) {
     for (let index = 0; index < gameboardlist[i].length; index++) {
       let num = 3 * i;
@@ -309,9 +317,10 @@ function saveGameBoard() {
       }
     }
   }
-  saveGameBoardToServer();
+  saveGameBoardToServer(doNotStartGet);
 }
-async function saveGameBoardToServer() {
+async function saveGameBoardToServer(doNotStartGet) {
+  console.log("-=-=- Save Game Board =-=-=");
   await fetch("https://localhost:7111/api/TicTacToe/saveGameBoard", {
     method: "Put",
     body: JSON.stringify({
@@ -326,30 +335,48 @@ async function saveGameBoardToServer() {
     },
   });
 
-  if(side == "circle" && playerTwoID==null ){
-    doublePlayerInterval = setInterval(() => {getGameBoard();}, intervalSec);
-  }else{
-    intervalId = setInterval(() => {getGameBoard();}, intervalSec);
+  if(!doNotStartGet)
+  {
+    if(side == "circle" && playerTwoID==null ){
+      doublePlayerInterval = setInterval(() => {getGameBoard();}, intervalSec);
+    }else{
+      intervalId = setInterval(() => {getGameBoard();}, intervalSec);
+    }
   }
+  
 }
 
 async function getGameBoard() {
-  const response = await fetch(
-    "https://localhost:7111/api/TicTacToe/getGameBoard/"+ roomNum
-  );
-  const data = await response.json();
+  try
+  {
+    const response = await fetch(
+      "https://localhost:7111/api/TicTacToe/getGameBoard/"+ roomNum
+    );
+    const data = await response.json();
 
-  checkWhosTurn(data);
-  // host wait for second player
-  checkSecoundplayer(data);
- 
-  // Check if other player make a move
-  checkNewGameBoard(data);
-
-  playerTwoSpecial(data);
-
-  //check if win
-  winningcheck();
+    if(data["roomID"] == null)
+    {
+      return;
+    }
+    
+    checkWhosTurn(data);
+    // host wait for second player
+    checkSecoundplayer(data);
+   
+    // Check if other player make a move
+    checkNewGameBoard(data);
+  
+    // playerTwoSpecial(data);
+  
+    //check if win
+    winningcheck();
+  }
+  catch(e)
+  {
+    console.log(e);
+  }
+  
+  
 }
 function checkSecoundplayer(data){
   if(data["playerTwo"]!=null){
@@ -388,16 +415,22 @@ function checkWhosTurn(data){
   
 
 }
-function playerTwoSpecial(data){
-  if(playerOneID==null)
-  {
-    playerOneID = data["playerOne"];
-    clearInterval(playerTwoInterval);
-    saveGameBoard();
-  }
-  clearInterval(playerTwoInterval);
+// function playerTwoSpecial(data){
 
-}
+//   console.log(playerOneID);
+//   console.log(data);
+
+//   if(playerOneID == null)
+//   {
+//     console.log(playerOneID);
+//     console.log(data["playerOne"]);
+//     playerOneID = data["playerOne"];
+//     clearInterval(playerTwoInterval);
+//     saveGameBoard(true);
+//   }
+//   clearInterval(playerTwoInterval);
+//   console.log("-*-*/-/-*/-*/-*/*-/-");
+// }
 
 
 async function getEvent() {
@@ -407,57 +440,8 @@ async function getEvent() {
   const data = await response.json();
 }
 
-// async function saveGameBoard(){
-//   // let str = "";
-//   //gameboardlist.forEach(function(el) {str += el[0] + ', ' + el[1] + ', [' + el[2] + '] '});
-
-//   // const temp = gameboardlist.toString();
-//  // let JsonArray = JSON.parse(Arrays.deepToString(gameboardlist));
-
-//   // console.log("\n");
-
-// let keys = gameboardlist.shift();
-// // create JSON objects from the remaining data
-// let json = gameboardlist.map(row => {
-//     let obj = {};
-//     // add each element of the row to the object with the corresponding key
-//     row.forEach((value, index) => {
-//         obj[keys[index]] = value;
-//     });
-//     return obj;
-// });
-// //console.log(json);
-// console.log(gameboardlist);
-// return json;
-
-// let keys = gameboardlist.shift();
-// let json = gameboardlist.map(row => Object.assign({}, ...row.map((v, i) => ({ [keys[i]]: v }))));
-
-//let json  = gameboardlist.assign();
-//   console.log(json);
-// }
-
-// async function saveGameBoard(){
-//   let JsonArray = new JSONArray();
-//   for(let j = 0;j<gameboardlist.length; j++){
-//     let tempArray = new JSONArray();
-
-//     for(let i =0; i<gameboardlist[j].length; i++){
-//       tempArray.put(gameboardlist[j][i]);
-
-//     }
-//     JsonArray.put(tempArray);
-//   }
-//   // console.log(JsonArray);
-//   // console.log("\n");
-
-// }
-
-
-
-
-
 async function findRoom(id) {
+  console.log("-=-=- Find Room =-=-=");
   const response = await fetch("https://localhost:7111/api/TicTacToe/findRoom", {
     method: "Put",
     body: JSON.stringify({
@@ -470,10 +454,14 @@ async function findRoom(id) {
 
   const data = await response.json();
 
-  if(data==true||data=="true" ){
-    roomNum = id;
+  console.log(data)
+  console.log("-*-/-*/-")
+  if(data["roomID"] != null){
+    roomNum = data["roomID"];
+    playerOneID = data["playerOne"];
     startGame();
   }else{
+    let inputBoxRoom = document.getElementById("enterRoomID");
     inputBoxRoom.value = null;
     inputBoxRoom.placeholder = "Room not exist";
   }
