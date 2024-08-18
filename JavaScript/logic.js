@@ -18,14 +18,14 @@ let gameboardlist = [
   [null, null, null],
 ];
 
-const intervalSec = 2 * 1000;
+const intervalSec = 1 * 1000;
 
 /**
  * 
  * Hello 啊~ 明天的我~
- * 接下来要检查的部分是
- * 把player的ID换成名字这样就可以显示赢家(正确显示赢家)
- * 检查为什么Player2 下完了一步以后还能上传gamboard
+ * 接下来要修改的部分是
+ * 让玩家输入服务器IP
+ * 修复对局结束后重复发送请求导致无法正常重开下一局的问题
  * 
  */
 
@@ -38,6 +38,8 @@ let side;
 let playerTwoID = null;
 let playerOneID = null;
 let intervalId;
+
+let firstTimeCheck=true;
 
 let playerTwoInterval;
 
@@ -81,7 +83,7 @@ function joinGame(){
       ? "Player2"
       : inputBoxPlayerOne.value;
 
-  playerTwoID = Math.floor(10000000+Math.random() * 90000000);
+  playerTwoID = playerName;
 
 
 }
@@ -107,7 +109,7 @@ function Host(){
     inputBoxPlayerOne.value == ""
       ? "Player1"
       : inputBoxPlayerOne.value;
-  playerOneID = Math.floor(10000000+Math.random() * 90000000);
+  playerOneID = playerName;
   startGame();
 
   
@@ -134,7 +136,7 @@ function buttonClick(targetId) {
 
   blocker.style.display = "block";
   if (iscircle == true && side=="circle") {
-    whosTurn.innerHTML = "cross" + "'s turn";
+    whosTurn.innerHTML = playerTwoID + "'s turn";
     whosTurn.className = "playerTwoColor";
     if (target.className == "circle") {
       console.log("there is not empty box")
@@ -149,7 +151,7 @@ function buttonClick(targetId) {
       iscircle = true;
     }
   } else if(iscircle == false && side=="cross"){
-    whosTurn.innerHTML = "circle" + "'s turn";
+    whosTurn.innerHTML = playerOneID + "'s turn";
     whosTurn.className = "playerOneColor";
     if (target.className == "cross") {
       console.log("there is not empty box")
@@ -164,7 +166,7 @@ function buttonClick(targetId) {
       iscircle = false;
     }
   }
- 
+  blocker.style.display = "block";
   winningcheck();
   saveGameBoard();
   // send to server
@@ -272,10 +274,10 @@ function endScene(iscircle) {
   background.style.display = "none";
 
   if (iscircle == 1) {
-    wintext.innerHTML = playerName + " Win!";
+    wintext.innerHTML = playerOneID + " Win!";
     wintext.classList.add("playerOneColor");
   } else if (iscircle == 2) {
-    wintext.innerHTML = playerTwoName + " Win!";
+    wintext.innerHTML = playerTwoID + " Win!";
     wintext.classList.add("playerTwoColor");
   } else if (iscircle == 0) {
     wintext.innerHTML = "It's A Tie!";
@@ -292,8 +294,8 @@ function restartGame() {
   endScene.style.display = "none";
 
   const whosTurn = document.getElementById("whosTurn");
-  whosTurn.className = "";
-  whosTurn.style.display = "none";
+  whosTurn.className = "tip";
+  whosTurn.style.display = "block";
 
   for (let i = 0; i < pieceList.length; i++) {
     let target = document.getElementById(pieceList[i]);
@@ -360,8 +362,11 @@ async function getGameBoard() {
     }
     
     checkWhosTurn(data);
-    // host wait for second player
-    checkSecoundplayer(data);
+    if(firstTimeCheck==true){
+      // host wait for second player
+      checkSecoundplayer(data);
+    }
+
    
     // Check if other player make a move
     checkNewGameBoard(data);
@@ -381,9 +386,11 @@ async function getGameBoard() {
 function checkSecoundplayer(data){
   if(data["playerTwo"]!=null){
     clearInterval(doublePlayerInterval);
+    playerTwoID = data["playerTwo"];
     blocker.style.display = "none";
     const printRoom = document.getElementById("printRoom");
     printRoom.style.display = "none";
+    firstTimeCheck=false;
   }
 
 
@@ -403,11 +410,11 @@ function checkWhosTurn(data){
   if(data["turn"]!= iscircle){
     iscircle = data["turn"];
     if(iscircle==true){
-      whosTurn.innerHTML = "circle" + "'s turn";
+      whosTurn.innerHTML = playerOneID + "'s turn";
       whosTurn.className = "playerOneColor";
 
     }else{
-      whosTurn.innerHTML = "cross" + "'s turn";
+      whosTurn.innerHTML = playerTwoID + "'s turn";
       whosTurn.className = "playerTwoColor";
     }
     
